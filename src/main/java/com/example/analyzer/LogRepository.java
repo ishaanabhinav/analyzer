@@ -1,12 +1,11 @@
 package com.example.analyzer;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.analyzer.Log;
-
-// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
-// CRUD refers Create, Read, Update, Delete
-
-public interface LogRepository extends CrudRepository<Log, Long> {
+/**
+ * This will be AUTO IMPLEMENTED by Spring into a Bean called LogRepository
+ * JpaRepository extends PagingAndSortingRepository and CRUD Repositroy.
+ */
+public interface LogRepository extends JpaRepository<Log, Long> {
 
 }

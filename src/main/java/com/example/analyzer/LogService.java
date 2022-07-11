@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,17 @@ public class LogService {
     @Resource
     LogRepository logRepository;
 
-    private static final String defaultFilePath = "/Users/ishaanabhinav/bo-log-analyzer/analyzer/activites.log";
+    private static final String defaultFilePath = "activites.log";
 
     private static final Logger logger = LoggerFactory.getLogger(LogService.class);
 
+    /**
+     * This method is triggered asynchronously to parse the lgo file at the given
+     * path or defaults to the constant path.
+     * @param filePath
+     * After parsing the file, the parsed data is stored in database.
+     */
+    @Async
     public void runLogParser(String filePath) {
         if (filePath == null || filePath.trim().length() == 0){
             filePath = defaultFilePath.toString();
@@ -44,6 +52,10 @@ public class LogService {
         logger.info("OK!");
     }
 
+    /**
+     * This parses every line of the log file and creates a log entry in database.
+     * @param line
+     */
     public void parseLogFile(String line) {
         if(line.trim() == "") return;
 
@@ -67,8 +79,13 @@ public class LogService {
         logger.info("OK!");
     }
 
-    public Log parseLogLine(){
+    public Log parseLogLine(String logEntry){
+
         String line = "2018-09-18 04:49:38,215 ERROR (defaulttask-95) IP-Address=157.49.141.133#,!User-Agent=Mozilla/5.0(WindowsNT10.0;WOW64;Trident/7.0;rv:11.0)likeGecko#,!X-Request-From=UIX#,!Request-Type=POST#,!API=/v1/admin/developers#,!User-Login=test@demo.com#,!User-Name=testUser#,!EnterpriseId=2#,!EnterpriseName=Enterprise-2#,!Auth-Status=#,!Status-Code=200#,!Response-Time=346#,!Request-Body=";
+
+        if (logEntry != null && logEntry.trim().length() > 0){
+            line = logEntry;
+        }
         
         String dateTime = line.substring(0,line.indexOf(','));
 
@@ -103,6 +120,13 @@ public class LogService {
         return log;
     }
 
+    /**
+     * This method checks if the key value from log is valid and adds it to the Log object
+     * @param log
+     * @param key
+     * @param value
+     * @return Log object after setting the value.
+     */
     public Log setLogData(Log log, String key, String value){
         switch(key){
             case "IP-Address":

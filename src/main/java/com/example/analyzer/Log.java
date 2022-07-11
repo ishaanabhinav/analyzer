@@ -19,6 +19,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * This is the model to store log entries in database
+ * @author : Ishaan Abhinav
+ */
 @Entity // This tells Hibernate to make a table out of this class
 @Data
 public class Log {
